@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDom from "react-dom";
 import "semantic-ui-css/semantic.min.css";
+import "./index.css"
 
 import SeasonDisplay from "./SeasonDisplay";
 import Loading from "./Loading";
@@ -47,21 +48,30 @@ class App extends React.Component {
         console.log("Componen unmounted!")
     }
 
+    renderContent() {
+        if(this.state.errorMessage && !this.state.lat){
+            return <div>
+                Error: {this.state.errorMessage}
+            </div>
+        }
+        if(this.state.lat && !this.state.errorMessage){
+            return <SeasonDisplay lat={this.state.lat}/>
+        }
+        return <Loading message="Please accept the location request"/>;
+    }
+
     //Mandatory for react to work
     render() {
-             
-            if(this.state.errorMessage && !this.state.lat){
-                return <div>
-                    Error: {this.state.errorMessage}
-                </div>
-            }
-            if(this.state.lat && !this.state.errorMessage){
-                return <SeasonDisplay lat={this.state.lat}/>
-            }
-            return <Loading />;
-            
-        }      
-    
+        return (
+            <div className="wrap">
+                {this.renderContent()}
+            </div>
+        );           
+    }      
 }
+// if Loading has no props this is executed
+Loading.defaultProps = {
+    message: 'Loading...'
+};
 
 ReactDom.render(<App/>, document.querySelector('#root'));
